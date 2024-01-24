@@ -6,52 +6,58 @@ import {
   loginSuccess,
   logoutSuccess,
 } from "./Slices/userSlice.ts";
+import {
+  userAuthAPI,
+  useEmailSignupMutation,
+  useEmailLoginMutation,
+  useGoogleSignupMutation,
+  useLogoutMutation,
+  useSendResetPassWordEmailMutation,
+  useSetNewPassWordMutation,
+  useUpdateUserProfileMutation,
+} from "./API/userAuthAPI";
 
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-
 const persistConfig = {
   key: "root",
   storage,
 };
-
 const persistedSystemReducer = persistReducer(
   persistConfig,
   sysmtemSlice.reducer
 );
-
 const persistedUserReducer = persistReducer(
   persistConfig,
   userDataSlice.reducer
 );
-
 export const store = configureStore({
   reducer: {
     system: persistedSystemReducer,
     user: persistedUserReducer,
-    // [UserAuthAPI.reducerPath]: UserAuthAPI.reducer,
+    [userAuthAPI.reducerPath]: userAuthAPI.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    })
-      .concat
-      //   UserAuthAPI.middleware,
-      (),
+    }).concat(userAuthAPI.middleware),
 });
 
 export const persistedStore = persistStore(store);
-
 setupListeners(store.dispatch);
-
 export type RootState = ReturnType<typeof store.getState>;
-
 export {
   // system settings
   resetSystem,
   themeSwitch,
   // user auth
-
+  useEmailSignupMutation,
+  useEmailLoginMutation,
+  useGoogleSignupMutation,
+  useLogoutMutation,
+  useSendResetPassWordEmailMutation,
+  useSetNewPassWordMutation,
+  useUpdateUserProfileMutation,
   // user auth slice
   loginSuccess,
   logoutSuccess,
