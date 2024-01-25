@@ -36,7 +36,11 @@ const Signup = () => {
     e.preventDefault();
     toast.promise(emailSignup(data).unwrap(), {
       loading: "Creating user...",
-      success: "Successfully created user!",
+      success: () => {
+        // Successfully created user, now navigate to /login
+        navigate("/login");
+        return "Successfully created user!";
+      },
       error: (err) => err,
     });
   };

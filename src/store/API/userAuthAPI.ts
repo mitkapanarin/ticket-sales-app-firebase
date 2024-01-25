@@ -1,24 +1,27 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
-import { auth, db, googleProvider } from "../../config/firebase-config";
+import {
+  auth,
+  googleProvider,
+} from "../../config/firebase-config";
 import {
   createUserWithEmailAndPassword,
   UserCredential,
   signInWithPopup,
   signInWithEmailAndPassword,
   signOut,
-  confirmPasswordReset,
   sendPasswordResetEmail,
-  updateProfile,
+  confirmPasswordReset,
 } from "firebase/auth";
-import { IUserSignInData, IUpdateUser } from "../../types/interface";
-import { doc, setDoc } from "firebase/firestore";
 
-const usersCollectionName = "users";
+export interface IUserSignInData {
+  email: string;
+  password: string;
+}
 
-export const userAuthAPI = createApi({
-  reducerPath: "userAuthAPI",
+export const UserAuthAPI = createApi({
+  reducerPath: "UserAuthAPI",
   baseQuery: fakeBaseQuery(),
-  tagTypes: ["User"],
+  tagTypes: ["User", "UpdateUser"],
   endpoints: (builder) => ({
     logout: builder.mutation<void, null>({
       queryFn: async () => {
@@ -44,25 +47,6 @@ export const userAuthAPI = createApi({
             email,
             password
           );
-
-          const userID = response.user?.uid;
-          const userDocRef = doc(db, usersCollectionName, userID);
-
-          await setDoc(userDocRef, {
-            uid: userID,
-            firstName: "",
-            lastName: "",
-            displayName: response.user?.displayName,
-            email: response.user?.email,
-            phoneNumber: response.user?.phoneNumber,
-            address: "",
-            photoURL: response.user?.photoURL,
-            facebook: "",
-            twitter: "",
-            instagram: "",
-            linkedin: "",
-          });
-
           return {
             data: response, // Corrected the return type to match QueryReturnValue
           };
@@ -109,6 +93,7 @@ export const userAuthAPI = createApi({
       },
       invalidatesTags: ["User"],
     }),
+
     sendResetPassWordEmail: builder.mutation<
       string,
       {
@@ -131,6 +116,7 @@ export const userAuthAPI = createApi({
       },
       invalidatesTags: ["User"],
     }),
+
     setNewPassWord: builder.mutation<
       string,
       {
@@ -152,41 +138,9 @@ export const userAuthAPI = createApi({
       },
       invalidatesTags: ["User"],
     }),
-    // update user profile
-    updateUserProfile: builder.mutation<
-      IUpdateUser,
-      Pick<IUpdateUser, "name" | "photoURL" | "phoneNumber">
-    >({
-      queryFn: async ({ name, photoURL, phoneNumber }) => {
-        console.log("data requests ", name, photoURL, phoneNumber);
-        try {
-          const user = auth.currentUser;
-          if (user) {
-            // Update the user's profile with the provided name and photoURL
-            await updateProfile(user, {
-              displayName: name,
-              photoURL,
-            });
-          }
-          return {
-            data: {
-              name,
-              photoURL,
-              email: user?.email,
-              uid: user?.uid,
-              phoneNumber: user?.phoneNumber,
-            } as IUpdateUser,
-          };
-        } catch (err) {
-          return {
-            error: (err as Error)?.message,
-          };
-        }
-      },
-      invalidatesTags: ["User"],
-    }),
   }),
 });
+
 export const {
   useEmailSignupMutation,
   useEmailLoginMutation,
@@ -194,5 +148,4 @@ export const {
   useLogoutMutation,
   useSendResetPassWordEmailMutation,
   useSetNewPassWordMutation,
-  useUpdateUserProfileMutation,
-} = userAuthAPI;
+} = UserAuthAPI;

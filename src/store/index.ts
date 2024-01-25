@@ -6,15 +6,14 @@ import {
   loginSuccess,
   logoutSuccess,
 } from "./Slices/userSlice.ts";
-import {
-  userAuthAPI,
+import { 
+  UserAuthAPI,
   useEmailSignupMutation,
   useEmailLoginMutation,
   useGoogleSignupMutation,
   useLogoutMutation,
   useSendResetPassWordEmailMutation,
   useSetNewPassWordMutation,
-  useUpdateUserProfileMutation,
 } from "./API/userAuthAPI";
 
 import { persistStore, persistReducer } from "redux-persist";
@@ -35,12 +34,12 @@ export const store = configureStore({
   reducer: {
     system: persistedSystemReducer,
     user: persistedUserReducer,
-    [userAuthAPI.reducerPath]: userAuthAPI.reducer,
+    [UserAuthAPI.reducerPath]: UserAuthAPI.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(userAuthAPI.middleware),
+    }).concat(UserAuthAPI.middleware),
 });
 
 export const persistedStore = persistStore(store);
@@ -57,7 +56,6 @@ export {
   useLogoutMutation,
   useSendResetPassWordEmailMutation,
   useSetNewPassWordMutation,
-  useUpdateUserProfileMutation,
   // user auth slice
   loginSuccess,
   logoutSuccess,

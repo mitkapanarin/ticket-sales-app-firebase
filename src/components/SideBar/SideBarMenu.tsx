@@ -21,18 +21,28 @@ const SideBarMenu = ({
         <SidebarLink
           icon={<UserCircle className="w-4 h-4" />}
           label="User"
-          path="/User"
+          path="/user"
         />
         <SidebarLink
           icon={<ShoppingBag className="w-4 h-4" />}
           label="Products"
           path="/products"
         />
+        <SidebarLink
+          icon={<ShoppingBag className="w-4 h-4" />}
+          label="Login"
+          path="/login"
+        />{" "}
+        <SidebarLink
+          icon={<ShoppingBag className="w-4 h-4" />}
+          label="Create Account"
+          path="/signup"
+        />
         <div onClick={appSignout}>
           <SidebarLink
             icon={<LogOut className="w-4 h-4" />}
             label="Sign Out"
-            path="/login"
+            path="/"
           />
         </div>
         <DarkModeSwitch theme={theme} onClick={handleChangeTheme} />

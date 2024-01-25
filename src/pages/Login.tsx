@@ -12,9 +12,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { IUserSignInData } from "@/types/interface";
 import { useEmailLoginMutation, useGoogleSignupMutation } from "@/store";
+import { Loader2 } from "lucide-react";
+import { GoogleAuthType } from "../types/types";
 
 const Login = () => {
   const initialState: IUserSignInData = {
@@ -33,26 +35,36 @@ const Login = () => {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await toast
-      .promise(emailLogin(data).unwrap(), {
-        pending: "Logging in...",
-        success: "Login successful",
-        error: "Login failed",
+    toast.loading("Logging in, Please wait...", {
+      icon: (
+        <Loader2 className="h-[20px] w-[20px] animate-spin text-[#26AC9B]" />
+      ),
+    });
+    emailLogin(data)
+      .unwrap()
+      .then(() => {
+        toast.success("Success!", {
+          description: "Logged in Successfully",
+        });
       })
-      .then(() => setData(initialState))
-      // .then(() => navigate("/profile"))
-      .catch((err) => toast.error(err));
+      .then(() => {
+        setData(initialState);
+        // Navigate to /user after successful login
+        navigate("/user");
+      })
+      .catch((err: string) => {
+        toast.error("Unable to login...", {
+          description: err,
+        });
+      });
   };
 
-  const GoogleAuth = async () =>
-    await toast
-      .promise(googleSignup(null).unwrap(), {
-        pending: "Creating user...",
-        success: "Successfully created user!",
-        error: "Could not create user!",
-      })
-      .then(() => navigate("/profile"))
-      .catch((err) => toast.error(err));
+  const GoogleAuth: GoogleAuthType = async () =>
+    toast.promise(googleSignup(null).unwrap(), {
+      loading: "Logging in...",
+      success: "Successfully Logged in!",
+      error: "Unable to login!",
+    });
   return (
     <div className="flex h-[100vh] justify-center items-center">
       <Card className="max-w-[320px]">
