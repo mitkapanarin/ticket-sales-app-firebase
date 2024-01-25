@@ -10,5 +10,4 @@ export interface iErrorState {
   isFetching?: boolean;
 }
 
-
 export type GoogleAuthType = () => Promise<string | number>;

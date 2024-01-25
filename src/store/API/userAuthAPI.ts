@@ -1,8 +1,5 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
-import {
-  auth,
-  googleProvider,
-} from "../../config/firebase-config";
+import { auth, googleProvider } from "../../config/firebase-config";
 import {
   createUserWithEmailAndPassword,
   UserCredential,
